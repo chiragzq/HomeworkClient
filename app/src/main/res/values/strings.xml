@@ -3,4 +3,5 @@
     <string name="submit_button">Login</string>
     <string name="username_label">Username</string>
     <string name="password_label">Password</string>
+    <string name="loading_text">Loading...</string>
 </resources>
