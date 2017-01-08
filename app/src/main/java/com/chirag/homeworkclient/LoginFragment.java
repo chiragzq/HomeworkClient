@@ -7,18 +7,23 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 
 public class LoginFragment extends Fragment {
+    View.OnClickListener mClickListener;
+
     public LoginFragment() {
         // Required
     }
 
     // TODO: Rename and change type
-    public static LoginFragment newInstance() {
+    public static LoginFragment newInstance(View.OnClickListener listener) {
         LoginFragment fragment = new LoginFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
+        fragment.mClickListener = listener;
+
         return fragment;
     }
 
@@ -27,15 +32,13 @@ public class LoginFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type an.d name
-        void onFragmentInteraction(Uri uri);
-    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false);
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
+        view.findViewById(R.id.login_button).setOnClickListener(mClickListener);
+        return view;
     }
 
     @Override
@@ -47,14 +50,6 @@ public class LoginFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
     }
-    /*findViewById(R.id.login_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String username = ((EditText)findViewById(R.id.username_et)).getText().toString();
-                String password = ((EditText)findViewById(R.id.password_et)).getText().toString();
-                tryLogin(username, password);
-            }
-        });
-    */
+
 
 }

@@ -11,16 +11,21 @@ import android.view.View;
 import android.widget.EditText;
 
 public class MainActivity extends FragmentActivity {
+    MainClickListener mMainClickListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Fragment loginFragment = LoginFragment.newInstance();
+        mMainClickListener = new MainClickListener();
+
+        Fragment loginFragment = LoginFragment.newInstance(mMainClickListener);
         getSupportFragmentManager().beginTransaction()
-                .add(loginFragment, "login_frag")
+                .add(R.id.activity_main, loginFragment, "login_frag")
                 .commit();
+
     }
 
     public void tryLogin(String username, String password) {
@@ -32,17 +37,9 @@ public class MainActivity extends FragmentActivity {
 
     public void openLoading() {
         LoadingFragment loadingFragment = new LoadingFragment();
-        LoginFragment loginFragmentloginFragment = new LoginFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(loginFragmentloginFragment, loadingFragment);
-        transaction.addToBackStack(null);
-
-        /*Fragment loginFragment = getSupportFragmentManager().findFragmentByTag("login_frag");
-        Fragment loadingFragment = LoadingFragment.newInstance();
-        getSupportFragmentManager().beginTransaction()
-                .remove(loginFragment)
-                .add(loadingFragment, "Loading")
-                .commit();*/
+        transaction.replace(R.id.activity_main, loadingFragment);
+        transaction.commit();
     }
 
     public class LoginTask extends AsyncTask<String, Integer, Boolean> {
@@ -65,6 +62,23 @@ public class MainActivity extends FragmentActivity {
             findViewById(R.id.login_button).setEnabled(true);
             if (success) {
                 openLoading();
+            }
+        }
+    }
+
+    public void onLoginClicked(){
+        String username = ((EditText)findViewById(R.id.username_et)).getText().toString();
+        String password = ((EditText)findViewById(R.id.password_et)).getText().toString();
+        tryLogin(username,password);
+    }
+    private class MainClickListener implements View.OnClickListener {
+        public void onClick(View v) {
+            switch(v.getId()) {
+                case R.id.login_button:
+                    onLoginClicked();
+                    break;
+                default:
+                    Log.i("Test", "Clicked id " + v.getId());
             }
         }
     }
