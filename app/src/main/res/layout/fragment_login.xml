@@ -26,10 +26,27 @@
         android:layout_height="wrap_content"
         android:id="@+id/password_et"
         android:inputType="textPassword" />
-
-    <Button
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/submit_button"
-        android:id="@+id/login_button"/>
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/submit_button"
+            android:id="@+id/login_button"/>
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/login_progress"
+            android:visibility="invisible"/>
+    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_failed"
+        android:visibility="invisible"
+        android:id="@+id/login_failed_message"/>
+
 </LinearLayout>

@@ -12,7 +12,8 @@ import android.widget.EditText;
 
 public class MainActivity extends FragmentActivity {
     MainClickListener mMainClickListener;
-
+    LoginFragment mLoginFragment;
+    CalenderFragment mCalenderFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,9 +22,10 @@ public class MainActivity extends FragmentActivity {
 
         mMainClickListener = new MainClickListener();
 
-        Fragment loginFragment = LoginFragment.newInstance(mMainClickListener);
+        mLoginFragment = LoginFragment.newInstance(mMainClickListener);
+        mCalenderFragment = CalenderFragment.newInstance(mMainClickListener);
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.activity_main, loginFragment, "login_frag")
+                .add(R.id.activity_main, mLoginFragment, "login_frag")
                 .commit();
 
     }
@@ -35,10 +37,9 @@ public class MainActivity extends FragmentActivity {
 
     }
 
-    public void openLoading() {
-        LoadingFragment loadingFragment = new LoadingFragment();
+    public void openCalender() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.activity_main, loadingFragment);
+        transaction.replace(R.id.activity_main, mCalenderFragment);
         transaction.commit();
     }
 
@@ -54,32 +55,46 @@ public class MainActivity extends FragmentActivity {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            return true;
+            return username.equals("Hi") && password.equals("Hi");
         }
 
         protected void onPostExecute(Boolean success) {
-            Log.i("debug", "Logged in? " + success);
-            findViewById(R.id.login_button).setEnabled(true);
             if (success) {
-                openLoading();
+                openCalender();
+            } else {
+                mLoginFragment.setLoading(false);
+                findViewById(R.id.login_failed_message).setVisibility(View.VISIBLE);
             }
         }
     }
 
-    public void onLoginClicked(){
+    public void onLoginClicked() {
         String username = ((EditText)findViewById(R.id.username_et)).getText().toString();
         String password = ((EditText)findViewById(R.id.password_et)).getText().toString();
         tryLogin(username,password);
+
+        mLoginFragment.setLoading(true);
     }
+
+    public void onLogoutClicked() {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.activity_main, mLoginFragment);
+        transaction.commit();
+    }
+
     private class MainClickListener implements View.OnClickListener {
         public void onClick(View v) {
             switch(v.getId()) {
                 case R.id.login_button:
                     onLoginClicked();
                     break;
+                case R.id.logout_button:
+                    onLogoutClicked();
+                    break;
                 default:
                     Log.i("Test", "Clicked id " + v.getId());
             }
         }
     }
+
 }

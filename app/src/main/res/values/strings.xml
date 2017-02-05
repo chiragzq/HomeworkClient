@@ -4,4 +4,6 @@
     <string name="username_label">Username</string>
     <string name="password_label">Password</string>
     <string name="loading_text">Loading...</string>
+    <string name="login_failed">Failed to log in.</string>
+    <string name="logout_button">Logout</string>
 </resources>
