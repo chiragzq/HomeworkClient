@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
+import android.widget.CalendarView;
 import android.widget.EditText;
 
 import java.io.BufferedInputStream;
@@ -23,6 +24,8 @@ public class MainActivity extends FragmentActivity {
     MainClickListener mMainClickListener;
     LoginFragment mLoginFragment;
     CalenderFragment mCalenderFragment;
+    DataManager mDataManager;
+    DayFragment mDayFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,10 +35,17 @@ public class MainActivity extends FragmentActivity {
         mMainClickListener = new MainClickListener();
 
         mLoginFragment = LoginFragment.newInstance(mMainClickListener);
-        mCalenderFragment = CalenderFragment.newInstance(mMainClickListener);
+        mCalenderFragment = CalenderFragment.newInstance(mMainClickListener, new CalendarView.OnDateChangeListener(){
+            @Override
+            public void onSelectedDayChange(CalendarView calendarView, int year, int month, int day) {
+                openDay();
+            }
+        });
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.activity_main, mLoginFragment, "login_frag")
                 .commit();
+        mDataManager = new DataManager();
+        mDayFragment = DayFragment.newInstance(mMainClickListener);
 
     }
 
@@ -49,6 +59,12 @@ public class MainActivity extends FragmentActivity {
     public void openCalender() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.activity_main, mCalenderFragment);
+        transaction.commit();
+    }
+
+    public void openDay() {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.activity_main, mDayFragment);
         transaction.commit();
     }
 

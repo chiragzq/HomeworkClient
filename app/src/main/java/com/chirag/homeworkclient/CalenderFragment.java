@@ -7,19 +7,25 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CalendarView;
 
 public class CalenderFragment extends Fragment{
     View.OnClickListener mClickListener;
+    CalendarView.OnDateChangeListener mDayListener;
     public CalenderFragment() {
         // Required
     }
 
     // TODO: Rename and change type
-    public static CalenderFragment newInstance(View.OnClickListener listener) {
+    public static CalenderFragment newInstance(
+            View.OnClickListener listener,
+            CalendarView.OnDateChangeListener dayListener) {
+
         CalenderFragment fragment = new CalenderFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         fragment.mClickListener = listener;
+        fragment.mDayListener = dayListener;
 
         return fragment;
     }
@@ -35,6 +41,7 @@ public class CalenderFragment extends Fragment{
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_calender, container, false);
         view.findViewById(R.id.logout_button).setOnClickListener(mClickListener);
+        ((CalendarView)view.findViewById(R.id.calendarView)).setOnDateChangeListener(mDayListener);
         return view;
     }
 
