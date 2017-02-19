@@ -12,8 +12,11 @@ public class DataManager {
     public List<Assignment> getAssignments(int day) {
         List<Assignment> assignments = new ArrayList<>();
         assignments.add(new Assignment("Title", "this is a short description", "Math",Date.valueOf("2017-2-12"),Date.valueOf("2017-2-13")));
-        assignments.add(new Assignment("Title", "this is a short description", "Math",Date.valueOf("2017-2-12"),Date.valueOf("2017-2-13")));
-        assignments.add(new Assignment("Title", "this is a short description", "Math",Date.valueOf("2017-2-12"),Date.valueOf("2017-2-13")));
+        assignments.add(new Assignment("Title", "this is a short description", "Reading",Date.valueOf("2017-2-12"),Date.valueOf("2017-2-13")));
+        assignments.add(new Assignment("Title", "this is a short description", "Science",Date.valueOf("2017-2-12"),Date.valueOf("2017-2-13")));
+        assignments.add(new Assignment("Title", "this is a short description", "Math_0",Date.valueOf("2017-2-12"),Date.valueOf("2017-2-13")));
+        assignments.add(new Assignment("Title", "this is a short description", "Reading_0",Date.valueOf("2017-2-12"),Date.valueOf("2017-2-13")));
+        assignments.add(new Assignment("Title", "this is a short description", "Science_0",Date.valueOf("2017-2-12"),Date.valueOf("2017-2-13")));
         return assignments;
     }
 }

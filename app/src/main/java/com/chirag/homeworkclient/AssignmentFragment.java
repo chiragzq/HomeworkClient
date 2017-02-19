@@ -6,24 +6,24 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-/**
- * Created by spafindoople on 2/12/17.
- */
+import android.widget.TextView;
 
 public class AssignmentFragment extends Fragment {
     View.OnClickListener mClickListener;
+    Assignment mAssignment;
     public AssignmentFragment() {
         // Required
     }
 
     // TODO: Rename and change type
-    public static AssignmentFragment newInstance(View.OnClickListener listener) {
+    public static AssignmentFragment newInstance(
+            View.OnClickListener listener,
+            Assignment assignment) {
         AssignmentFragment fragment = new AssignmentFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         fragment.mClickListener = listener;
-
+        fragment.mAssignment = assignment;
         return fragment;
     }
 
@@ -36,7 +36,8 @@ public class AssignmentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.assignment_view, container, false);
+        View view = inflater.inflate(R.layout.fragment_assignment, container, false);
+        ((TextView) view.findViewById(R.id.class_name_text)).setText(mAssignment.course);
         return view;
     }
 
