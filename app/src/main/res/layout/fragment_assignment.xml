@@ -12,20 +12,21 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Learn C++ in 20 minutes"
+        android:id="@+id/assignment_name_text"
         android:textStyle="bold"
         android:textSize="25dp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tuesday - Thursday"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:id="@+id/assignment_day_text"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:textSize="16dp"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18dp"
-        android:text="Learn c++ in 20 minutes. It can't possibly be that hard."/>
+        android:id="@+id/assignment_description_text"
+        android:textSize="18dp" />
 
 </LinearLayout>
