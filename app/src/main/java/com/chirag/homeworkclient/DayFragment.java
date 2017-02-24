@@ -124,13 +124,13 @@ public class DayFragment extends Fragment {
         String monthString = "";
         String weekday = "";
         switch(diff) {  //check if relative phrases should be used
-            case -2:
+            case 2:
                 return "2 days ago";
-            case -1:
+            case 1:
                 return "Yesterday";
             case 0:
                 return" Today";
-            case 1:
+            case -1:
                 return "Tomorrow";
         }
 
@@ -153,7 +153,6 @@ public class DayFragment extends Fragment {
                     break;
             case 6: weekday = "Friday";
         }
-        Log.i("Debug", getYear(todayDate) + " " + getDay(todayDate) + " " + date.toString().substring(5,7));
         if(Math.abs(getDay(todayDate) - getDay(date)) <= 6) {  //decide whether the date is close enough to not include the full format
             return weekday;
         } else {
