@@ -79,7 +79,7 @@ public class MainActivity extends FragmentActivity {
             String username = strings[0];
             String password = strings[1];
 
-            try {
+            /*try {
                 URL url = new URL("https://webappsca.pcrsoft.com/Clue/SC-Student-Portal-Login-LDAP/8464?returnUrl=https%3a%2f%2fwebappsca.pcrsoft.com%2fClue%2fSC-Assignments-End-Date-Range%2f7536");
                 HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
                 conn.setRequestProperty("Host","webappsca.pcrsoft.com");
@@ -101,7 +101,7 @@ public class MainActivity extends FragmentActivity {
                 }
             } catch(IOException e) {
 
-            }
+            }*/
 
             return username.equals("Hi") && password.equals("Hi");
         }
