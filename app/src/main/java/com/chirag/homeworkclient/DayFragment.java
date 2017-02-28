@@ -3,6 +3,7 @@ package com.chirag.homeworkclient;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +50,7 @@ public class DayFragment extends Fragment {
         listView.setAdapter(new AssignmentAdapter(mDataManager.getAssignments(mYear, mMonth, mDay)));
 
         String day = (mDay < 10 ? "0" : "") + mDay;
-        String month = (mMonth < 10 ? "0" : "") + mMonth;
+        String month = ((mMonth + 1) < 10 ? "0" : "") + (mMonth + 1);
         String year = "" + mYear;
 
         ((TextView) view.findViewById(R.id.date_view)).setText(dateString(Date.valueOf(year + "-" + month + "-" + day)));
@@ -117,12 +118,12 @@ public class DayFragment extends Fragment {
 
     private static final String[] weekdayNames = {"Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
 
-    private static final String[] monthNames = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+    private static final String[] monthNames = {"", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
     public String dateString(Date date) {
         Date todayDate = new Date(System.currentTimeMillis()); //get a sql date with today
 
-        int diff = getDay(todayDate);
+        int diff = getDay(todayDate) - getDay(date);
         int dayNum = 0;
         switch(diff) {  //check if relative phrases should be used
             case 2:
@@ -142,7 +143,7 @@ public class DayFragment extends Fragment {
 
         String weekday = weekdayNames[dayNum];
 
-        if(Math.abs(getDay(todayDate) - getDay(date)) <= 6) {  //decide whether the date is close enough to not include the full format
+        if((getDay(todayDate) - getDay(date)) < 0 && (getDay(todayDate) - getDay(date)) > -7) {  //decide whether the date is close enough to not include the full format
             return weekday;
         } else {
             String monthString = monthNames[Integer.parseInt(date.toString().substring(5,7))];
