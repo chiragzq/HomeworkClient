@@ -9,9 +9,6 @@ import android.view.View;
 import android.widget.CalendarView;
 import android.widget.EditText;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 
 public class MainActivity extends FragmentActivity {
     MainClickListener mMainClickListener;
@@ -66,6 +63,9 @@ public class MainActivity extends FragmentActivity {
             String username = strings[0];
             String password = strings[1];
 
+            if(username.equals("22pranavg")) {
+                return false;
+            }
             return username.equals("Hi") && password.equals("Hi");
         }
 

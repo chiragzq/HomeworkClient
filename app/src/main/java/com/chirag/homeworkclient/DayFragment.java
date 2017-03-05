@@ -3,7 +3,6 @@ package com.chirag.homeworkclient;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 public class DayFragment extends Fragment {
