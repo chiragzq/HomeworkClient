@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
 
+import java.sql.Date;
+import java.util.Calendar;
+
 public class CalenderFragment extends Fragment{
     View.OnClickListener mClickListener;
     CalendarView.OnDateChangeListener mDayListener;
@@ -41,7 +44,9 @@ public class CalenderFragment extends Fragment{
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_calender, container, false);
         view.findViewById(R.id.logout_button).setOnClickListener(mClickListener);
-        ((CalendarView)view.findViewById(R.id.calendarView)).setOnDateChangeListener(mDayListener);
+        CalendarView calenderView = ((CalendarView)view.findViewById(R.id.calendarView));
+        calenderView.setOnDateChangeListener(mDayListener);
+        lockDate(calenderView);
         return view;
     }
 
@@ -66,5 +71,24 @@ public class CalenderFragment extends Fragment{
     public void reset() {
         setLoading(false);
         getView().findViewById(R.id.login_failed_message).setVisibility(View.INVISIBLE);
+    }
+
+    public void lockDate(CalendarView calendarView) {
+        Calendar calendar = Calendar.getInstance();
+        Date todayDate = new Date(System.currentTimeMillis());
+        calendar.set(getYear(todayDate), getMonth(todayDate), 1);
+        calendarView.setMinDate(calendar.getTimeInMillis());
+    }
+
+    public int getDay(Date date) {
+        return Integer.parseInt(date.toString().substring(8,10));
+    }
+
+    public int getYear(Date date) {
+        return Integer.parseInt(date.toString().substring(0,4));
+    }
+
+    public int getMonth(Date date) {
+        return Integer.parseInt(date.toString().substring(5,7));
     }
 }

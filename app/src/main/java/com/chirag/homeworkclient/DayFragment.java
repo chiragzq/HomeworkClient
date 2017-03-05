@@ -3,7 +3,6 @@ package com.chirag.homeworkclient;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +11,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.TimeZone;
 
 public class DayFragment extends Fragment {
     View.OnClickListener mClickListener;
     DataManager mDataManager;
+    private int mYear;
+    private int mMonth;
+    private int mDay;
 
     public DayFragment() {
         // Required
@@ -45,22 +44,15 @@ public class DayFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_day, container, false);
-        ListView leftColumn = (ListView) view.findViewById(R.id.left_column);
-        ListView rightColumn = (ListView) view.findViewById(R.id.right_column);
+        ListView listView = (ListView) view.findViewById(R.id.list_view);
+        listView.setAdapter(new AssignmentAdapter(mDataManager.getAssignments(mYear, mMonth, mDay)));
 
-        rightColumn.setAdapter(new AssignmentAdapter(mDataManager.getAssignments(0), 1));
-        leftColumn.setAdapter(new AssignmentAdapter(mDataManager.getAssignments(0), 0));
+        String day = (mDay < 10 ? "0" : "") + mDay;
+        String month = ((mMonth + 1) < 10 ? "0" : "") + (mMonth + 1);
+        String year = "" + mYear;
+
+        ((TextView) view.findViewById(R.id.date_view)).setText(dateString(Date.valueOf(year + "-" + month + "-" + day)));
         return view;
-    }
-
-    public List<Assignment> splitList(List<Assignment> assignments, int side) {
-        List<Assignment> ret = new ArrayList<>();
-        for (int i = 0; i < assignments.size(); i++) {
-            if (i % 2 == side) {
-                ret.add(assignments.get(i));
-            }
-        }
-        return ret;
     }
 
     @Override
@@ -73,11 +65,17 @@ public class DayFragment extends Fragment {
         super.onDetach();
     }
 
+    public void setDate(int year, int month, int day) {
+        mYear = year;
+        mMonth = month;
+        mDay = day;
+    }
+
     private class AssignmentAdapter extends BaseAdapter {
         List<Assignment> mAssignments;
 
-        public AssignmentAdapter(List<Assignment> assignments, int side) {
-            mAssignments = splitList(assignments, side);
+        public AssignmentAdapter(List<Assignment> assignments) {
+            mAssignments = assignments;
         }
 
         public int getCount() {
@@ -110,19 +108,21 @@ public class DayFragment extends Fragment {
                             dateString(mAssignments.get(position).end));
 
             ((TextView) convertView.findViewById(R.id.assignment_description_text)).setText(
-                    mAssignments.get(position).des);
+                    mAssignments.get(position).desc);
 
             return convertView;
         }
     }
+
+    private static final String[] weekdayNames = {"Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
+
+    private static final String[] monthNames = {"", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
     public String dateString(Date date) {
         Date todayDate = new Date(System.currentTimeMillis()); //get a sql date with today
 
         int diff = getDay(todayDate) - getDay(date);
         int dayNum = 0;
-        String monthString = "";
-        String weekday = "";
         switch(diff) {  //check if relative phrases should be used
             case 2:
                 return "2 days ago";
@@ -138,49 +138,13 @@ public class DayFragment extends Fragment {
                 getMonthCode(date) +
                 (getYear(date) % 100) +
                 ((getYear(date) % 100) / 4)) % 7;
-        switch(dayNum) {
-            case 0: weekday = "Saturday";
-                    break;
-            case 1: weekday = "Sunday";
-                    break;
-            case 2: weekday = "Monday";
-                    break;
-            case 3: weekday = "Tuesday";
-                    break;
-            case 4: weekday = "Wednesday";
-                    break;
-            case 5: weekday = "Thursday";
-                    break;
-            case 6: weekday = "Friday";
-        }
-        if(Math.abs(getDay(todayDate) - getDay(date)) <= 6) {  //decide whether the date is close enough to not include the full format
+
+        String weekday = weekdayNames[dayNum];
+
+        if((getDay(todayDate) - getDay(date)) < 0 && (getDay(todayDate) - getDay(date)) > -7) {  //decide whether the date is close enough to not include the full format
             return weekday;
         } else {
-            switch(Integer.parseInt(date.toString().substring(5,7))) {
-                case 1: monthString = "January";
-                    break;
-                case 2: monthString = "February";
-                    break;
-                case 3: monthString = "March";
-                    break;
-                case 4: monthString = "April";
-                    break;
-                case 5: monthString = "May";
-                    break;
-                case 6: monthString = "June";
-                    break;
-                case 7: monthString = "July";
-                    break;
-                case 8: monthString = "August";
-                    break;
-                case 9: monthString = "September";
-                    break;
-                case 10: monthString = "October";
-                    break;
-                case 11: monthString = "November";
-                    break;
-                default: monthString = "December";
-            }
+            String monthString = monthNames[Integer.parseInt(date.toString().substring(5,7))];
             return weekday + ", " + monthString + " " +  getDay(date);   //eg. Friday, February 17
         }
     }
