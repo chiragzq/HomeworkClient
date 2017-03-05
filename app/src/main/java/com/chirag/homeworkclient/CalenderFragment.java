@@ -41,7 +41,6 @@ public class CalenderFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_calender, container, false);
         view.findViewById(R.id.logout_button).setOnClickListener(mClickListener);
         CalendarView calenderView = ((CalendarView)view.findViewById(R.id.calendarView));
@@ -73,11 +72,16 @@ public class CalenderFragment extends Fragment{
         getView().findViewById(R.id.login_failed_message).setVisibility(View.INVISIBLE);
     }
 
+    private static final String[] monthNames = {"", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+
+    private static final String[] monthDays = {"", "31", "28", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+
     public void lockDate(CalendarView calendarView) {
         Calendar calendar = Calendar.getInstance();
         Date todayDate = new Date(System.currentTimeMillis());
         calendar.set(getYear(todayDate), getMonth(todayDate), 1);
         calendarView.setMinDate(calendar.getTimeInMillis());
+
     }
 
     public int getDay(Date date) {
