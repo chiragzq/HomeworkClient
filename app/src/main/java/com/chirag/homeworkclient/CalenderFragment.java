@@ -72,16 +72,14 @@ public class CalenderFragment extends Fragment{
         getView().findViewById(R.id.login_failed_message).setVisibility(View.INVISIBLE);
     }
 
-    private static final String[] monthNames = {"", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-
-    private static final String[] monthDays = {"", "31", "28", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
     public void lockDate(CalendarView calendarView) {
         Calendar calendar = Calendar.getInstance();
         Date todayDate = new Date(System.currentTimeMillis());
-        calendar.set(getYear(todayDate), getMonth(todayDate), 1);
-        calendarView.setMinDate(calendar.getTimeInMillis());
-
+        calendar.set(getYear(todayDate), getMonth(todayDate)-1, 1);
+        calendarView.setMinDate(calendar.getTimeInMillis()); //set min date
+        calendar.set(getYear(todayDate), getMonth(todayDate), 0);
+        calendarView.setMaxDate(calendar.getTimeInMillis()); //set max date
     }
 
     public int getDay(Date date) {

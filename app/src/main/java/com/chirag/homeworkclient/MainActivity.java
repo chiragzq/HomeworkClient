@@ -42,7 +42,6 @@ public class MainActivity extends FragmentActivity {
         findViewById(R.id.login_button).setEnabled(false);
         Log.i("debug", "Username: " + username + " Password: " + password);
         new LoginTask().execute(username, password);
-
     }
 
     public void openCalender() {
@@ -62,6 +61,7 @@ public class MainActivity extends FragmentActivity {
         protected Boolean doInBackground(String... strings) {
             String username = strings[0];
             String password = strings[1];
+
 
             if(username.equals("22pranavg")) {
                 return false;
