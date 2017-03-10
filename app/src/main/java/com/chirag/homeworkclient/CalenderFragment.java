@@ -82,10 +82,6 @@ public class CalenderFragment extends Fragment{
         calendarView.setMaxDate(calendar.getTimeInMillis()); //set max date
     }
 
-    public int getDay(Date date) {
-        return Integer.parseInt(date.toString().substring(8,10));
-    }
-
     public int getYear(Date date) {
         return Integer.parseInt(date.toString().substring(0,4));
     }
