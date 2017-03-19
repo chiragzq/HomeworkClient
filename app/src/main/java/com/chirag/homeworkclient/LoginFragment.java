@@ -98,7 +98,7 @@ public class LoginFragment extends Fragment {
             return 0;
         }
 
-        private final String[] weekday = {"S", "M", "T", "W", "T", "F", "S"};
+        private final String[] weekday = {"S", "Mlease change caller according to com.intellij.openapi.project.IndexNotReadyException documentation", "T", "W", "T", "F", "S"};
 
         // create a new ImageView for each item referenced by the Adapter
         public View getView(int position, View convertView, ViewGroup parent) {
