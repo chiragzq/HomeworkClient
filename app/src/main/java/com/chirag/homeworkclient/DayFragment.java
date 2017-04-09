@@ -51,7 +51,7 @@ public class DayFragment extends Fragment {
         String month = ((mMonth + 1) < 10 ? "0" : "") + (mMonth + 1);
         String year = "" + mYear;
 
-        ((TextView) view.findViewById(R.id.date_view)).setText(dateString(Date.valueOf(year + "-" + month + "-" + day)));
+        ((TextView) view.findViewById(R.id.date_view)).setText(DateUtil.dateString(Date.valueOf(year + "-" + month + "-" + day)));
         return view;
     }
 
@@ -103,9 +103,9 @@ public class DayFragment extends Fragment {
                     mAssignments.get(position).title);
 
             ((TextView) convertView.findViewById(R.id.assignment_day_text)).setText(
-                    dateString(mAssignments.get(position).start) +
+                    DateUtil.dateString(mAssignments.get(position).start) +
                             " - " +
-                            dateString(mAssignments.get(position).end));
+                            DateUtil.dateString(mAssignments.get(position).end));
 
             ((TextView) convertView.findViewById(R.id.assignment_description_text)).setText(
                     mAssignments.get(position).desc);
@@ -118,69 +118,5 @@ public class DayFragment extends Fragment {
 
     private static final String[] monthNames = {"", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
-    public String dateString(Date date) {
-        Date todayDate = new Date(System.currentTimeMillis()); //get a sql date with today
 
-        int diff = getDay(todayDate) - getDay(date);
-        int dayNum = 0;
-        switch(diff) {  //check if relative phrases should be used
-            case 2:
-                return "2 days ago";
-            case 1:
-                return "Yesterday";
-            case 0:
-                return" Today";
-            case -1:
-                return "Tomorrow";
-        }
-
-        dayNum = (getDay(date) +        //calculate the day of the week the date is
-                getMonthCode(date) +
-                (getYear(date) % 100) +
-                ((getYear(date) % 100) / 4)) % 7;
-
-        String weekday = weekdayNames[dayNum];
-
-        if((getDay(todayDate) - getDay(date)) < 0 && (getDay(todayDate) - getDay(date)) > -7) {  //decide whether the date is close enough to not include the full format
-            return weekday;
-        } else {
-            String monthString = monthNames[Integer.parseInt(date.toString().substring(5,7))];
-            return weekday + ", " + monthString + " " +  getDay(date);   //eg. Friday, February 17
-        }
-    }
-
-    public int getDay(Date date) {
-        return Integer.parseInt(date.toString().substring(8,10));
-    }
-
-    public int getMonthCode(Date date) {    //used to calculate the day of the week the date is on
-        int year = getYear(date);
-        int month = Integer.parseInt(date.toString().substring(5,7));
-        if(year % 100 > 0 && year % 400 > 0 && year % 4 == 0) {
-            switch(month) {
-                case 10: return 0;
-                case 5: return 1;
-                case 2: case 8: return 2;
-                case 3: case 11: return 3;
-                case 6: return 4;
-                case 9: case 12 : return 5;
-                case 1 :case 4: case 7: return 6;
-            }
-        } else {
-            switch(month) {
-                case 1: case 10: return 0;
-                case 5: return 1;
-                case 8: return 2;
-                case 2: case 3: case 11: return 3;
-                case 6: return 4;
-                case 9: case 12 : return 5;
-                case 4: case 7: return 6;
-            }
-        }
-        return 0;
-    }
-
-    public int getYear(Date date) {
-        return Integer.parseInt(date.toString().substring(0,4));
-    }
 }

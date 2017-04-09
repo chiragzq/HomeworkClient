@@ -3,6 +3,7 @@ package com.chirag.homeworkclient;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,22 +15,23 @@ import android.widget.TextView;
 
 import java.sql.Date;
 import java.util.Calendar;
+import java.util.List;
 
 
 public class LoginFragment extends Fragment {
     View.OnClickListener mClickListener;
-
+    DataManager mDataManager;
     public LoginFragment() {
         // Required
     }
 
     // TODO: Rename and change type
-    public static LoginFragment newInstance(View.OnClickListener listener) {
+    public static LoginFragment newInstance(View.OnClickListener listener, DataManager dataManager) {
         LoginFragment fragment = new LoginFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         fragment.mClickListener = listener;
-
+        fragment.mDataManager = dataManager;
         return fragment;
     }
 
@@ -45,9 +47,14 @@ public class LoginFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         view.findViewById(R.id.login_button).setOnClickListener(mClickListener);
 
+        DisplayMetrics metrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int topRowHeight = 40;
+        int rowHeight = (metrics.heightPixels - topRowHeight) / 5;
+
         GridView gridView = ((GridView) view.findViewById(R.id.grid_view));
         gridView.setNumColumns(7);
-        gridView.setAdapter(new GridAdapter(getContext()));
+        gridView.setAdapter(new GridAdapter(getContext(), topRowHeight, rowHeight));
         return view;
     }
 
@@ -77,13 +84,15 @@ public class LoginFragment extends Fragment {
         ((EditText)getView().findViewById(R.id.password_et)).setText("");
     }
 
-    private static final String[] weekdayNames = {"Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
-
     public class GridAdapter extends BaseAdapter {
         private Context mContext;
+        private int mTopRowHeight;
+        private int mRowHeight;
 
-        public GridAdapter(Context c) {
+        public GridAdapter(Context c, int topRowHeight, int rowHeight) {
             mContext = c;
+            mTopRowHeight = topRowHeight;
+            mRowHeight = rowHeight;
         }
 
         public int getCount() {
@@ -98,7 +107,7 @@ public class LoginFragment extends Fragment {
             return 0;
         }
 
-        private final String[] weekday = {"S", "Mlease change caller according to com.intellij.openapi.project.IndexNotReadyException documentation", "T", "W", "T", "F", "S"};
+        private final String[] weekday = {"S", "M", "T", "W", "T", "F", "S"};
 
         // create a new ImageView for each item referenced by the Adapter
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -106,105 +115,54 @@ public class LoginFragment extends Fragment {
             if (convertView == null) {
                 convertView = inflater.inflate(R.layout.calendar_cell, parent, false);
             }
-            if (position < 7) {
-                ((TextView) convertView.findViewById(R.id.day_num)).setText(weekday[position]);
-            } else {
-                Date todayDate = new Date(System.currentTimeMillis());
-                Calendar thisMonth = Calendar.getInstance();
-                Calendar lastMonth = Calendar.getInstance();
-                thisMonth.set(getYear(todayDate),  Integer.parseInt(todayDate.toString().substring(5,7))-1, 1);
-                lastMonth.set(getYear(todayDate),  Integer.parseInt(todayDate.toString().substring(5,7))-2, 1);
-                Date firstDate = new Date(thisMonth.getTimeInMillis());
-                Date lastMonthDate = new Date(lastMonth.getTimeInMillis());
-                int startDateOffset = dateOffset(firstDate);
-
-                if(position < startDateOffset + 7) { // last month month
-                    ((TextView) convertView.findViewById(R.id.day_num)).setText(""
-                            + (daysInMonth(lastMonthDate)
-                            - startDateOffset
-                            + position
-                            - 6
-                    ));
-                    Log.i("Debug", "first " + position);
-                }
-                else if (position - 6 - startDateOffset > daysInMonth(todayDate)) { // next month
-                    ((TextView) convertView.findViewById(R.id.day_num)).setText("" + (position - 6 - startDateOffset - daysInMonth(todayDate)));
-                    Log.i("Debug", "middle " + position);
-                } else { // this month
-                    ((TextView) convertView.findViewById(R.id.day_num)).setText("" + (position - 6 - startDateOffset));
-                    Log.i("Debug", "last " + position);
-                }
-            }
+            initCalendarCell(convertView, position);
             return convertView;
         }
 
-    }
-    public int getDay(Date date) {
-        return Integer.parseInt(date.toString().substring(8,10));
-    }
 
-    public int dateOffset(Date date) {    //used to calculate the day of the week the date is on
-        int year = getYear(date);
-        int month = Integer.parseInt(date.toString().substring(5,7));
-        int monthCode = 0;
-        String weekday = "";
-        String[] weekdayNames = {"Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
-        if(year % 100 > 0 && year % 400 > 0 && year % 4 == 0) {
-            switch(month) {
-                case 10: monthCode = 0; break;
-                case 5: monthCode = 1; break;
-                case 2: case 8: monthCode = 2; break;
-                case 3: case 11: monthCode = 3; break;
-                case 6: monthCode = 4; break;
-                case 9: case 12 : monthCode = 5; break;
-                case 1 :case 4: case 7: monthCode = 6;
-            }
-        } else {
-            switch(month) {
-                case 1: case 10: monthCode = 0; break;
-                case 5: monthCode = 1; break;
-                case 8: monthCode = 2; break;
-                case 2: case 3: case 11: monthCode = 3; break;
-                case 6: monthCode = 4; break;
-                case 9: case 12 : monthCode = 5; break;
-                case 4: case 7: monthCode = 6;
+        void initCalendarCell(View view, int position) {
+            Date todayDate = new Date(System.currentTimeMillis());
+            List<Assignment> assignments = mDataManager.getAssignments(
+                    DateUtil.getYear(todayDate),
+                    DateUtil.getMonth(todayDate),
+                    DateUtil.getDay(todayDate)
+            );
+            if (position < 7) {
+                ((TextView) view.findViewById(R.id.day_num)).setText(weekday[position]);
+                view.setMinimumHeight(mTopRowHeight);
+            } else {
+
+                ((TextView) view.findViewById(R.id.day_num)).setText(Integer.toString(getDayNumForPosition(position)));
+                view.setMinimumHeight(mRowHeight);
             }
         }
-        int dayCode = (getDay(date) + monthCode +  (getYear(date) % 100) + ((getYear(date) % 100) / 4)) % 7;
-        weekday = weekdayNames[dayCode];
-        switch(weekday) {
-            case "Sunday":
-                return 0;
-            case "Monday":
-                return 1;
-            case "Tuesday":
-                return 2;
-            case "Wednesday":
-                return 3;
-            case "Thursday":
-                return 4;
-            case "Friday":
-                return 5;
-            case "Saturday":
-                return 6;
-        }
-        return 0;
-    }
 
+        int getDayNumForPosition(int position) {
+            Date todayDate = new Date(System.currentTimeMillis());
+            Calendar thisMonth = Calendar.getInstance();
+            Calendar lastMonth = Calendar.getInstance();
+            thisMonth.set(DateUtil.getYear(todayDate),  Integer.parseInt(todayDate.toString().substring(5,7))-1, 1);
+            lastMonth.set(DateUtil.getYear(todayDate),  Integer.parseInt(todayDate.toString().substring(5,7))-2, 1);
+            Date firstDate = new Date(thisMonth.getTimeInMillis());
+            Date lastMonthDate = new Date(lastMonth.getTimeInMillis());
+            int startDateOffset = DateUtil.dateOffset(firstDate);
 
-    public int daysInMonth(Date date) {
-        int [] monthDays = {0,31,0,31,30,31,30,31,31,30,31,30,31};
-        int month = Integer.parseInt(date.toString().substring(5,7));
-        int year = getYear(date);
-
-        if(month != 2) {
-            return monthDays[month];
-        } else {
-            return (year % 100 > 0 && year % 400 > 0 && year % 4 == 0) ? 29 : 28;
+            if(position < startDateOffset + 7) { // last month month
+                return DateUtil.daysInMonth(lastMonthDate)
+                        - startDateOffset
+                        + position
+                        - 6;
+            }
+            else if (position - 6 - startDateOffset > DateUtil.daysInMonth(todayDate)) { // next month
+                return position - 6 - startDateOffset - DateUtil.daysInMonth(todayDate);
+            } else { // this month
+                return  position - 6 - startDateOffset;
+            }
         }
 
     }
-    public int getYear(Date date) {
-        return Integer.parseInt(date.toString().substring(0,4));
-    }
+
+
+
+
 }

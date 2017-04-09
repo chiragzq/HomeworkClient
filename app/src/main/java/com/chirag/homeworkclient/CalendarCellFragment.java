@@ -8,9 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-/**
- * Created by spafindoople on 3/5/17.
- */
 
 public class CalendarCellFragment extends Fragment {
     public CalendarCellFragment() {

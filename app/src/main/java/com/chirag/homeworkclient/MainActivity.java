@@ -24,7 +24,7 @@ public class MainActivity extends FragmentActivity {
 
         mMainClickListener = new MainClickListener();
 
-        mLoginFragment = LoginFragment.newInstance(mMainClickListener);
+        mLoginFragment = LoginFragment.newInstance(mMainClickListener, mDataManager);
         mCalenderFragment = CalenderFragment.newInstance(mMainClickListener, new CalendarView.OnDateChangeListener(){
             @Override
             public void onSelectedDayChange(CalendarView calendarView, int year, int month, int day) {
