@@ -12,18 +12,20 @@ import android.widget.EditText;
 
 public class MainActivity extends FragmentActivity {
     MainClickListener mMainClickListener;
+    DataManager mDataManager;
+
     LoginFragment mLoginFragment;
     CalenderFragment mCalenderFragment;
-    DataManager mDataManager;
     DayFragment mDayFragment;
+    CalendarFragment2 mCalendarFragment2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mDataManager = new DataManager();
 
         mMainClickListener = new MainClickListener();
-
         mLoginFragment = LoginFragment.newInstance(mMainClickListener, mDataManager);
         mCalenderFragment = CalenderFragment.newInstance(mMainClickListener, new CalendarView.OnDateChangeListener(){
             @Override
@@ -31,11 +33,12 @@ public class MainActivity extends FragmentActivity {
                 openDay(year, month, day);
             }
         });
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.activity_main, mLoginFragment, "login_frag")
-                .commit();
-        mDataManager = new DataManager();
+        mCalendarFragment2 = CalendarFragment2.newInstance(mMainClickListener, mDataManager);
         mDayFragment = DayFragment.newInstance(mMainClickListener, mDataManager);
+
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.activity_main, mCalendarFragment2, "cal2_frag")
+                .commit();
     }
 
     public void tryLogin(String username, String password) {
