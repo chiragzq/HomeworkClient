@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import java.util.List;
 public class CalendarFragment2 extends Fragment{
     View.OnClickListener mClickListener;
     DataManager mDataManager;
+    private OnDayClickedListener mOnDayClickedListener;
 
     public CalendarFragment2() {
         // Required
@@ -56,7 +58,7 @@ public class CalendarFragment2 extends Fragment{
             @Override
             public void onLayoutChange(View view, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 int topRowHeight = 40;
-                int rowHeight = (view.getHeight() - topRowHeight) / 5;
+                int rowHeight = (view.getHeight() - topRowHeight) / 5 - 20;
                 ((GridView) view).setAdapter(new GridAdapter(getContext(), topRowHeight, rowHeight));
             }
         });
@@ -74,10 +76,16 @@ public class CalendarFragment2 extends Fragment{
         super.onDetach();
     }
 
+
+    public void setOnDayClickedListener(OnDayClickedListener listener) {
+        mOnDayClickedListener = listener;
+    }
+
     public class GridAdapter extends BaseAdapter {
         private Context mContext;
         private int mTopRowHeight;
         private int mRowHeight;
+
 
         public GridAdapter(Context c, int topRowHeight, int rowHeight) {
             mContext = c;
@@ -124,7 +132,23 @@ public class CalendarFragment2 extends Fragment{
 
                 ((TextView) view.findViewById(R.id.day_num)).setText(Integer.toString(getDayNumForPosition(position)));
                 view.setMinimumHeight(mRowHeight);
+                view.setOnClickListener(createClickListener(getDayNumForPosition(position)));
             }
+        }
+
+        View.OnClickListener createClickListener(final int i) {
+            return new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                   // onDayClicked(i);
+                }
+            };
+        }
+
+
+        public void onDayClicked(int year, int month, int day) {
+            mOnDayClickedListener.onDayClicked(year, month, day);
         }
 
         int getDayNumForPosition(int position) {
@@ -149,5 +173,9 @@ public class CalendarFragment2 extends Fragment{
                 return  position - 6 - startDateOffset;
             }
         }
+    }
+
+    public interface OnDayClickedListener {
+        void onDayClicked(int year, int month, int day);
     }
 }

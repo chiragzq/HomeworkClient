@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.CalendarView;
 import android.widget.EditText;
 
+import java.sql.Date;
+
 
 public class MainActivity extends FragmentActivity {
     MainClickListener mMainClickListener;
@@ -34,6 +36,12 @@ public class MainActivity extends FragmentActivity {
             }
         });
         mCalendarFragment2 = CalendarFragment2.newInstance(mMainClickListener, mDataManager);
+        mCalendarFragment2.setOnDayClickedListener(new CalendarFragment2.OnDayClickedListener() {
+            @Override
+            public void onDayClicked(int year, int month, int day) {
+                openDay(year, month, day);
+            }
+        });
         mDayFragment = DayFragment.newInstance(mMainClickListener, mDataManager);
 
         getSupportFragmentManager().beginTransaction()
@@ -98,7 +106,7 @@ public class MainActivity extends FragmentActivity {
 
     private class MainClickListener implements View.OnClickListener {
         public void onClick(View v) {
-            switch(v.getId()) {
+            switch (v.getId()) {
                 case R.id.login_button:
                     onLoginClicked();
                     break;
