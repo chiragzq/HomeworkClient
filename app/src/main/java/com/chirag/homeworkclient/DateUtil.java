@@ -5,7 +5,7 @@ import java.sql.Date;
 class DateUtil {
     private static final String[] weekdayNames = {"Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
 
-    private static final String[] monthNames = {"", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+    static final String[] monthNames = {"", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
     static String dateString(Date date) {
         Date todayDate = new Date(System.currentTimeMillis()); //get a sql date with today

@@ -49,7 +49,15 @@ public class CalendarFragment2 extends Fragment{
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calender2, container, false);
         View logoutButton = view.findViewById(R.id.logout_button);
+        TextView calendarMonthText = (TextView) view.findViewById(R.id.calendar_month_text);
+
+
         logoutButton.setOnClickListener(mClickListener);
+        calendarMonthText.setText(
+                DateUtil.monthNames[DateUtil.getMonth(new Date(System.currentTimeMillis()))] +
+                " " +
+                DateUtil.getYear(new Date(System.currentTimeMillis()))
+        );
 
         GridView gridView = ((GridView) view.findViewById(R.id.grid_view));
         gridView.setNumColumns(7);

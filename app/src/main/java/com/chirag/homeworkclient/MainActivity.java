@@ -17,7 +17,7 @@ public class MainActivity extends FragmentActivity {
     DataManager mDataManager;
 
     LoginFragment mLoginFragment;
-    CalenderFragment mCalenderFragment;
+    //CalenderFragment mCalenderFragment;
     DayFragment mDayFragment;
     CalendarFragment2 mCalendarFragment2;
 
@@ -29,12 +29,12 @@ public class MainActivity extends FragmentActivity {
 
         mMainClickListener = new MainClickListener();
         mLoginFragment = LoginFragment.newInstance(mMainClickListener, mDataManager);
-        mCalenderFragment = CalenderFragment.newInstance(mMainClickListener, new CalendarView.OnDateChangeListener(){
+        /*mCalenderFragment = CalenderFragment.newInstance(mMainClickListener, new CalendarView.OnDateChangeListener(){
             @Override
             public void onSelectedDayChange(CalendarView calendarView, int year, int month, int day) {
                 openDay(year, month, day);
             }
-        });
+        });*/
         mCalendarFragment2 = CalendarFragment2.newInstance(mMainClickListener, mDataManager);
         mCalendarFragment2.setOnDayClickedListener(new CalendarFragment2.OnDayClickedListener() {
             @Override
@@ -57,7 +57,7 @@ public class MainActivity extends FragmentActivity {
 
     public void openCalender() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.activity_main, mCalenderFragment);
+        transaction.replace(R.id.activity_main, mCalendarFragment2);
         transaction.commit();
     }
 
