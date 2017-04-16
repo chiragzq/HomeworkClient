@@ -4,8 +4,6 @@ package com.chirag.homeworkclient;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,20 +15,20 @@ import java.sql.Date;
 import java.util.Calendar;
 import java.util.List;
 
-public class CalendarFragment2 extends Fragment{
+public class CalendarFragment extends Fragment{
     View.OnClickListener mClickListener;
     DataManager mDataManager;
     private OnDayClickedListener mOnDayClickedListener;
 
-    public CalendarFragment2() {
+    public CalendarFragment() {
         // Required
     }
 
     // TODO: Rename and change type
-    public static CalendarFragment2 newInstance(
+    public static CalendarFragment newInstance(
             View.OnClickListener listener,
             DataManager dataManager) {
-        CalendarFragment2 fragment = new CalendarFragment2();
+        CalendarFragment fragment = new CalendarFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         fragment.mClickListener = listener;
@@ -47,7 +45,7 @@ public class CalendarFragment2 extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_calender2, container, false);
+        View view = inflater.inflate(R.layout.fragment_calender, container, false);
         View logoutButton = view.findViewById(R.id.logout_button);
         TextView calendarMonthText = (TextView) view.findViewById(R.id.calendar_month_text);
 

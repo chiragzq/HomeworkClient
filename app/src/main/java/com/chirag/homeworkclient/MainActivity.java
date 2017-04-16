@@ -6,10 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
-import android.widget.CalendarView;
 import android.widget.EditText;
-
-import java.sql.Date;
 
 
 public class MainActivity extends FragmentActivity {
@@ -19,7 +16,7 @@ public class MainActivity extends FragmentActivity {
     LoginFragment mLoginFragment;
     //CalenderFragment mCalenderFragment;
     DayFragment mDayFragment;
-    CalendarFragment2 mCalendarFragment2;
+    CalendarFragment mCalendarFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +32,8 @@ public class MainActivity extends FragmentActivity {
                 openDay(year, month, day);
             }
         });*/
-        mCalendarFragment2 = CalendarFragment2.newInstance(mMainClickListener, mDataManager);
-        mCalendarFragment2.setOnDayClickedListener(new CalendarFragment2.OnDayClickedListener() {
+        mCalendarFragment = CalendarFragment.newInstance(mMainClickListener, mDataManager);
+        mCalendarFragment.setOnDayClickedListener(new CalendarFragment.OnDayClickedListener() {
             @Override
             public void onDayClicked(int year, int month, int day) {
                 openDay(year, month, day);
@@ -45,7 +42,7 @@ public class MainActivity extends FragmentActivity {
         mDayFragment = DayFragment.newInstance(mMainClickListener, mDataManager);
 
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.activity_main, mCalendarFragment2, "cal2_frag")
+                .add(R.id.activity_main, mCalendarFragment, "cal2_frag")
                 .commit();
     }
 
@@ -57,7 +54,7 @@ public class MainActivity extends FragmentActivity {
 
     public void openCalender() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.activity_main, mCalendarFragment2);
+        transaction.replace(R.id.activity_main, mCalendarFragment);
         transaction.commit();
     }
 
