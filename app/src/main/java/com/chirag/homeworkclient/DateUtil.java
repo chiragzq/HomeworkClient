@@ -1,11 +1,30 @@
 package com.chirag.homeworkclient;
 
+import android.util.Log;
+
 import java.sql.Date;
+import java.util.Calendar;
 
 class DateUtil {
     private static final String[] weekdayNames = {"Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
 
     static final String[] monthNames = {"", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+
+    static Date today() {
+        return new Date(System.currentTimeMillis());
+    }
+
+    static int numRowsInMonth(Date date) {
+        Calendar firstDay = Calendar.getInstance();
+        firstDay.set(getYear(date),getMonth(date) - 1,1);
+        Date firstDate = new Date(firstDay.getTimeInMillis());
+
+        if (DateUtil.dateOffset(firstDate) == 6 && DateUtil.daysInMonth(date) > 29) {
+            return 6;
+        } else if(DateUtil.dateOffset(firstDate) == 5 && DateUtil.daysInMonth(date) > 30) {
+            return 6;
+        } else return 5;
+    }
 
     static String dateString(Date date) {
         Date todayDate = new Date(System.currentTimeMillis()); //get a sql date with today

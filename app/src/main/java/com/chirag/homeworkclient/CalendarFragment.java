@@ -2,8 +2,11 @@ package com.chirag.homeworkclient;
 
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,7 +67,7 @@ public class CalendarFragment extends Fragment{
             @Override
             public void onLayoutChange(View view, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 int topRowHeight = 40;
-                int rowHeight = (view.getHeight() - topRowHeight) / 5 - 20;
+                int rowHeight = (view.getHeight() - topRowHeight) / DateUtil.numRowsInMonth(DateUtil.today()) - 20;
                 ((GridView) view).setAdapter(new GridAdapter(getContext(), topRowHeight, rowHeight));
             }
         });
@@ -100,7 +103,7 @@ public class CalendarFragment extends Fragment{
         }
 
         public int getCount() {
-            return 42;
+            return (DateUtil.numRowsInMonth(DateUtil.today()) + 1) * 7;
         }
 
         public Object getItem(int position) {
@@ -132,22 +135,33 @@ public class CalendarFragment extends Fragment{
                     DateUtil.getDay(todayDate)
             );
             if (position < 7) {
-                ((TextView) view.findViewById(R.id.day_num)).setText(weekday[position]);
+                TextView text = ((TextView) view.findViewById(R.id.day_num));
+                text.setText(weekday[position]);
+                text.setTextAppearance(getContext(),R.style.TopRowText);
+                text.setTextColor(Color.parseColor("#000000"));
                 view.setMinimumHeight(mTopRowHeight);
             } else {
+                TextView text = (TextView) view.findViewById(R.id.day_num);
+                if(DateUtil.getMonth(DateUtil.today()) == getMonthForPosition(position)) {
+                    text.setTextColor(Color.parseColor("#000000"));
+                } else text.setTextColor(Color.parseColor("#aaaaaa"));
+                text.setText(Integer.toString(getDayNumForPosition(position)));
 
-                ((TextView) view.findViewById(R.id.day_num)).setText(Integer.toString(getDayNumForPosition(position)));
                 view.setMinimumHeight(mRowHeight);
-                view.setOnClickListener(createClickListener(getDayNumForPosition(position)));
+                view.setOnClickListener(createClickListener(
+                        getYearForPosition(position),
+                        getMonthForPosition(position)-1,
+                        getDayNumForPosition(position)
+                ));
             }
         }
 
-        View.OnClickListener createClickListener(final int i) {
+        View.OnClickListener createClickListener(final int year, final int month, final int day) {
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
-                   // onDayClicked(i);
+                   onDayClicked(year, month, day);
                 }
             };
         }
@@ -155,6 +169,28 @@ public class CalendarFragment extends Fragment{
 
         public void onDayClicked(int year, int month, int day) {
             mOnDayClickedListener.onDayClicked(year, month, day);
+        }
+
+        int getMonthForPosition(int position) {
+            Calendar thisMonth = Calendar.getInstance();
+            thisMonth.set(DateUtil.getYear(DateUtil.today()),  DateUtil.getMonth(DateUtil.today())-1, 1);
+            Date firstDate = new Date(thisMonth.getTimeInMillis());
+            int startDateOffset = DateUtil.dateOffset(firstDate);
+
+            if (position < startDateOffset+7) {
+                return DateUtil.getMonth(DateUtil.today()) - 1;
+            } else if (position - startDateOffset - 6 > DateUtil.daysInMonth(DateUtil.today())) {
+                return DateUtil.getMonth(DateUtil.today()) + 1;
+            } else return DateUtil.getMonth(DateUtil.today());
+        }
+
+        int getYearForPosition(int position) {
+            int thisMonth = DateUtil.getMonth(DateUtil.today());
+            if(thisMonth == 12 && getMonthForPosition(position) == 1) {
+                return DateUtil.getYear(DateUtil.today()) + 1;
+            } else if(thisMonth == 1 && getMonthForPosition(position) == 12) {
+                return DateUtil.getYear(DateUtil.today()) - 1;
+            } else return DateUtil.getYear(DateUtil.today());
         }
 
         int getDayNumForPosition(int position) {
