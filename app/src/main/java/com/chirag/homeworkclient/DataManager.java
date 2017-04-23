@@ -1,10 +1,12 @@
 package com.chirag.homeworkclient;
 
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.sql.Date;
 
@@ -21,16 +23,23 @@ public class DataManager {
 
         try {
             JSONArray jsonArray = new JSONArray(str);
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(year,month-1,day);
+            Date todayDate = new Date(calendar.getTimeInMillis());
             for(int i=0; i < jsonArray.length(); i++) {
                 JSONObject assignJson = jsonArray.getJSONObject(i);
+                Date startDate = getDate(assignJson.getString("start"));
+                Date endDate = getDate(assignJson.getString("end"));
                 Assignment assign = new Assignment(
                         assignJson.getString("title"),
                         assignJson.getString("desc"),
                         assignJson.getString("course"),
-                        getDate(assignJson.getString("start")),
-                        getDate(assignJson.getString("end"))
+                        startDate,
+                        endDate
                         );
-                assignments.add(assign);
+                if(DateUtil.getDay(todayDate) >= DateUtil.getDay(startDate) && DateUtil.getDay(todayDate) <= DateUtil.getDay(endDate)) {
+                    assignments.add(assign);
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
