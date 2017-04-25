@@ -4,6 +4,7 @@ package com.chirag.homeworkclient;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.util.Log;
@@ -12,9 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -60,17 +63,33 @@ public class CalendarFragment extends Fragment{
                 DateUtil.getYear(new Date(System.currentTimeMillis()))
         );
 
-        GridView gridView = ((GridView) view.findViewById(R.id.grid_view));
+        final GridView gridView = ((GridView) view.findViewById(R.id.grid_view));
         gridView.setNumColumns(7);
 
-        gridView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+        final Handler handler = new Handler();
+        final Runnable setHeightRunnable = new Runnable() {
             @Override
-            public void onLayoutChange(View view, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+            public void run() {
                 int topRowHeight = 40;
-                int rowHeight = (view.getHeight() - topRowHeight) / DateUtil.numRowsInMonth(DateUtil.today()) - 20;
-                ((GridView) view).setAdapter(new GridAdapter(getContext(), topRowHeight, rowHeight));
+                int rowHeight = (gridView.getHeight() - topRowHeight) / DateUtil.numRowsInMonth(DateUtil.today()) - 20;
+                gridView.setAdapter(new GridAdapter(getContext(), topRowHeight, rowHeight));
             }
-        });
+        };
+
+        Runnable checkHeightRunnable = new Runnable() {
+            @Override
+            public void run() {
+                while(gridView.getWidth() == 0 && gridView.getHeight() == 0) {
+                    try {
+                        Thread.sleep(10);
+                    } catch(InterruptedException e) {
+
+                    }
+                }
+                handler.post(setHeightRunnable);
+            }
+        };
+        new Thread(checkHeightRunnable).start();
 
         return view;
     }
@@ -126,14 +145,16 @@ public class CalendarFragment extends Fragment{
             return convertView;
         }
 
+        List<TextView> getAssignmentTextViews(View view) {
+            List<TextView> textViews = new ArrayList<TextView>();
+            textViews.add((TextView) view.findViewById(R.id.assign_0));
+            textViews.add((TextView) view.findViewById(R.id.assign_1));
+            textViews.add((TextView) view.findViewById(R.id.assign_2));
+            return textViews;
+        }
 
         void initCalendarCell(View view, int position) {
             Date todayDate = new Date(System.currentTimeMillis());
-            List<Assignment> assignments = mDataManager.getAssignments(
-                    DateUtil.getYear(todayDate),
-                    DateUtil.getMonth(todayDate),
-                    DateUtil.getDay(todayDate)
-            );
             if (position < 7) {
                 TextView text = ((TextView) view.findViewById(R.id.day_num));
                 text.setText(weekday[position]);
@@ -141,6 +162,21 @@ public class CalendarFragment extends Fragment{
                 text.setTextColor(Color.parseColor("#000000"));
                 view.setMinimumHeight(mTopRowHeight);
             } else {
+                List<Assignment> assignments = mDataManager.getAssignments(
+                        getYearForPosition(position),
+                        getMonthForPosition(position),
+                        getDayNumForPosition(position));
+
+                List<TextView> views = getAssignmentTextViews(view);
+                for(int i = 0; i < views.size();i ++) {
+                    if(assignments.size() > i) {
+                        views.get(i).setVisibility(View.VISIBLE);
+                        views.get(i).setText(assignments.get(i).title);
+                    } else {
+                        views.get(i).setVisibility(View.INVISIBLE);
+                    }
+                }
+
                 TextView text = (TextView) view.findViewById(R.id.day_num);
                 if(DateUtil.getMonth(DateUtil.today()) == getMonthForPosition(position)) {
                     text.setTextColor(Color.parseColor("#000000"));
@@ -153,6 +189,9 @@ public class CalendarFragment extends Fragment{
                         getMonthForPosition(position)-1,
                         getDayNumForPosition(position)
                 ));
+
+
+
             }
         }
 
