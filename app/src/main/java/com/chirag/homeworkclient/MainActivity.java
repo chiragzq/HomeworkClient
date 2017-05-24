@@ -12,7 +12,7 @@ import android.widget.EditText;
 public class MainActivity extends FragmentActivity {
     MainClickListener mMainClickListener;
     DataManager mDataManager;
-
+    AssignmentParser mAssignmentParser;
     LoginFragment mLoginFragment;
     //CalenderFragment mCalenderFragment;
     DayFragment mDayFragment;
