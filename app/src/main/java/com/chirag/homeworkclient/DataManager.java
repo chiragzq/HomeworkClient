@@ -5,7 +5,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;consectetur. Suspendisse pulvinar elementum diam in facilisis. Suspendisse cursus, mag
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.sql.Date;
@@ -15,11 +15,17 @@ import java.sql.Date;
  * Created by spafindoople on 2/12/17.
  */
 public class DataManager {
+    AssignmentParser mAssignmentParser;
+
+    public DataManager(AssignmentParser assignmentParser) {
+        mAssignmentParser = assignmentParser;
+    }
+
     public List<Assignment> getAssignments(int year, int month, int day) {
         List<Assignment> assignments = new ArrayList<>();
 
         try {
-            JSONArray jsonArray = new JSONArray(str);
+            JSONArray jsonArray = new JSONArray(mAssignmentParser.getAssignments());
             Calendar calendar = Calendar.getInstance();
             calendar.set(year,month-1,day);
             Date todayDate = new Date(calendar.getTimeInMillis());

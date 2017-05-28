@@ -22,16 +22,11 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mDataManager = new DataManager();
-
+        mAssignmentParser = new AssignmentParser(this);
+        mDataManager = new DataManager(mAssignmentParser);
         mMainClickListener = new MainClickListener();
         mLoginFragment = LoginFragment.newInstance(mMainClickListener, mDataManager);
-        /*mCalenderFragment = CalenderFragment.newInstance(mMainClickListener, new CalendarView.OnDateChangeListener(){
-            @Override
-            public void onSelectedDayChange(CalendarView calendarView, int year, int month, int day) {
-                openDay(year, month, day);
-            }
-        });*/
+
         mCalendarFragment = CalendarFragment.newInstance(mMainClickListener, mDataManager);
         mCalendarFragment.setOnDayClickedListener(new CalendarFragment.OnDayClickedListener() {
             @Override
@@ -40,6 +35,7 @@ public class MainActivity extends FragmentActivity {
             }
         });
         mDayFragment = DayFragment.newInstance(mMainClickListener, mDataManager);
+
 
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.activity_main, mCalendarFragment, "cal2_frag")

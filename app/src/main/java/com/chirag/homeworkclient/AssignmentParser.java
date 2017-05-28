@@ -14,14 +14,22 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
-
+import android.content.Context;
+import android.util.Log;
 
 /**
  * Created by spafindoople on 5/20/17.
  */
 
 public class AssignmentParser {
-    public static String getHtml(Context context) {
+    static Context mContext;
+
+
+    public AssignmentParser(Context context) {
+        mContext = context;
+    }
+
+    static String getHtml(Context context) {
         InputStream stream = context.getResources().openRawResource(R.raw.out);
         BufferedReader r = new BufferedReader(new InputStreamReader(stream));
         StringBuilder str = new StringBuilder();
@@ -65,12 +73,10 @@ public class AssignmentParser {
             Element desc = name.parent().parent();
             String des = "";
 
+            desc.getElementsByTag("div").remove();
+            des = desc.children().toString();
 
-			/*desc.select("div").remove();
-			des=desc.text();
-			des = des.replaceAll("\"", "'");
-			des = des.replaceAll("^(<br>)*", "").replaceAll("(<br>)*$", "");*/
-
+            des = des.replaceAll("\n", "").replaceAll("^(<br>)+|(<br>)+$", "");
 
             String course = "";
             for(int j = 0; j < classes.size();j ++) {
@@ -80,7 +86,8 @@ public class AssignmentParser {
             }
             assignment.put("start", begin);
             assignment.put("end", finish);
-            assignment.put("desc", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eget ex et lectus dignissim consectetur. Suspendisse pulvinar elementum diam in facilisis. Suspendisse cursus, magna vel tristique ultrices, ipsum magna faucibus nunc, eget dictum nisi lorem rutrum magna. ");
+            //assignment.put("desc", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eget ex et lectus dignissim consectetur. Suspendisse pulvinar elementum diam in facilisis. Suspendisse cursus, magna vel tristique ultrices, ipsum magna faucibus nunc, eget dictum nisi lorem rutrum magna. ");
+            assignment.put("desc", des);
             assignment.put("course", course);
             assignment.put("title", title);
 
@@ -94,10 +101,10 @@ public class AssignmentParser {
         return assignmentList;
     }
 
-    public static void main(String[] args) {
-        Document doc = Jsoup.parse(getHtml());
+    public ArrayList<JSONObject> getAssignments() {
+        Document doc = Jsoup.parse(getHtml(mContext));
         ArrayList<String> classes = getClasses(doc);
-        System.out.println(parseAssignments(doc, classes));
+        return parseAssignments(doc, classes);
     }
 
 

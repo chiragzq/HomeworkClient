@@ -3,6 +3,7 @@ package com.chirag.homeworkclient;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -108,7 +109,7 @@ public class DayFragment extends Fragment {
                             DateUtil.dateString(mAssignments.get(position).end));
 
             ((TextView) convertView.findViewById(R.id.assignment_description_text)).setText(
-                    mAssignments.get(position).desc);
+                    Html.fromHtml(mAssignments.get(position).desc));
 
             return convertView;
         }
