@@ -49,5 +49,9 @@
         android:visibility="invisible"
         android:id="@+id/login_failed_message"/>
 
-
+    <WebView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/login_webview">
+    </WebView>
 </LinearLayout>
