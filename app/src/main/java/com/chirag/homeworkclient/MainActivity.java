@@ -12,7 +12,7 @@ public class MainActivity extends FragmentActivity {
     NetworkManager mNetworkManager;
     MainClickListener mMainClickListener;
     DataManager mDataManager;
-
+    AssignmentParser mAssignmentParser;
     LoginFragment mLoginFragment;
     //CalenderFragment mCalenderFragment;
     DayFragment mDayFragment;
