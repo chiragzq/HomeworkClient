@@ -12,7 +12,6 @@ public class MainActivity extends FragmentActivity {
     NetworkManager mNetworkManager;
     MainClickListener mMainClickListener;
     DataManager mDataManager;
-    AssignmentParser mAssignmentParser;
     LoginFragment mLoginFragment;
     //CalenderFragment mCalenderFragment;
     DayFragment mDayFragment;
@@ -22,8 +21,8 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mAssignmentParser = new AssignmentParser(this);
-        mDataManager = new DataManager(mAssignmentParser);
+        mNetworkManager = new NetworkManager();
+        mDataManager = new DataManager(mNetworkManager);
         mMainClickListener = new MainClickListener();
         mLoginFragment = LoginFragment.newInstance(mMainClickListener, mDataManager);
 
@@ -38,9 +37,8 @@ public class MainActivity extends FragmentActivity {
 
 
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.activity_main, mCalendarFragment, "cal2_frag")
+                .add(R.id.activity_main, mLoginFragment, "login_frag")
                 .commit();
-        mNetworkManager = new NetworkManager();
     }
 
     public void openCalender() {
@@ -63,8 +61,15 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onLogin(String sessionId, String token) {
                 boolean success = mNetworkManager.handleLogin(sessionId, token);
+
                 if (success) {
-                    openCalender();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mDataManager.downloadAssignments();
+                            openCalender();
+                        }
+                    }).start();
                 } else {
                     mLoginFragment.setLoading(false);
                     findViewById(R.id.login_failed_message).setVisibility(View.VISIBLE);

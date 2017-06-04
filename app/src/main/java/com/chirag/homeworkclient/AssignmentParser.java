@@ -12,22 +12,15 @@ import org.json.simple.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
-import android.content.Context;
-import android.util.Log;
 
 /**
  * Created by spafindoople on 5/20/17.
  */
 
 public class AssignmentParser {
-    static Context mContext;
-
-
-    public AssignmentParser(Context context) {
-        mContext = context;
-    }
+    static Document mDocument;
+    static ArrayList<JSONObject> mAssignments;
 
     static String getHtml(Context context) {
         InputStream stream = context.getResources().openRawResource(R.raw.out);
@@ -43,7 +36,7 @@ public class AssignmentParser {
         }
         return str.toString();
     }
-    public static ArrayList<JSONObject> parseAssignments(Document doc, ArrayList<String> classes) {
+    private static ArrayList<JSONObject> parseAssignments(Document doc, ArrayList<String> classes) {
         ArrayList<String> parsed = new ArrayList<String>();
         ArrayList<JSONObject> assignmentList = new ArrayList<JSONObject>();
         JSONObject assignment;
@@ -101,14 +94,18 @@ public class AssignmentParser {
         return assignmentList;
     }
 
-    public ArrayList<JSONObject> getAssignments() {
-        Document doc = Jsoup.parse(getHtml(mContext));
-        ArrayList<String> classes = getClasses(doc);
-        return parseAssignments(doc, classes);
+    public static ArrayList<JSONObject> getAssignments(String html) {
+        if(mAssignments == null)  {
+            mDocument = Jsoup.parse(html);
+            ArrayList<String> classes = getClasses(mDocument);
+            mAssignments = parseAssignments(mDocument, classes);
+        }
+
+        return mAssignments;
     }
 
 
-    public static ArrayList<String> getClasses(Document doc) {
+    private static ArrayList<String> getClasses(Document doc) {
         ArrayList<String> classList = new ArrayList<String>();
 
         Elements classes = getElement(doc,"table", "cbClasses").getElementsByTag("label");
@@ -119,7 +116,7 @@ public class AssignmentParser {
     }
 
 
-    public static Element getElement(Element doc, String tag, String id) {
+    private static Element getElement(Element doc, String tag, String id) {
         Elements elements = doc.getElementsByTag(tag);
         for(int i = 0;i < elements.size(); i++) {
             if(elements.get(i).id().contains(id)) {

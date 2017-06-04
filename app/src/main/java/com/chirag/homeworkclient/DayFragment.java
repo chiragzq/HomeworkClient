@@ -46,7 +46,7 @@ public class DayFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_day, container, false);
         ListView listView = (ListView) view.findViewById(R.id.list_view);
-        listView.setAdapter(new AssignmentAdapter(mDataManager.getAssignments(mYear, mMonth, mDay)));
+        listView.setAdapter(new AssignmentAdapter(mDataManager.getAssignments(mYear, mMonth+1, mDay)));
 
         String day = (mDay < 10 ? "0" : "") + mDay;
         String month = ((mMonth + 1) < 10 ? "0" : "") + (mMonth + 1);

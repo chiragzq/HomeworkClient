@@ -1,5 +1,7 @@
 package com.chirag.homeworkclient;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,22 +16,33 @@ import java.sql.Date;
  * Created by spafindoople on 2/12/17.
  */
 public class DataManager {
-    AssignmentParser mAssignmentParser;
+    NetworkManager mNetworkManager;
+    JSONArray mAssignments;
 
-    public DataManager(AssignmentParser assignmentParser) {
-        mAssignmentParser = assignmentParser;
+    public DataManager(NetworkManager networkManager) {
+        mNetworkManager = networkManager;
     }
+
+    public void downloadAssignments() {
+        String hi = mNetworkManager.getAssignmentPage();
+        Log.i("Debug", hi);
+        mAssignments = new JSONArray(
+                AssignmentParser.getAssignments(hi)
+        );
+
+    }
+
 
     public List<Assignment> getAssignments(int year, int month, int day) {
         List<Assignment> assignments = new ArrayList<>();
 
         try {
-            JSONArray jsonArray = new JSONArray(mAssignmentParser.getAssignments());
+
             Calendar calendar = Calendar.getInstance();
             calendar.set(year,month-1,day);
             Date todayDate = new Date(calendar.getTimeInMillis());
-            for(int i=0; i < jsonArray.length(); i++) {
-                JSONObject assignJson = jsonArray.getJSONObject(i);
+            for(int i=0; i < mAssignments.length(); i++) {
+                JSONObject assignJson = mAssignments.getJSONObject(i);
                 Date startDate = getDate(assignJson.getString("start"));
                 Date endDate = getDate(assignJson.getString("end"));
                 Assignment assign = new Assignment(
@@ -39,7 +52,8 @@ public class DataManager {
                         startDate,
                         endDate
                         );
-                if(DateUtil.getDay(todayDate) >= DateUtil.getDay(startDate) && DateUtil.getDay(todayDate) <= DateUtil.getDay(endDate)) {
+                if(calendar.getTimeInMillis() >= startDate.getTime() &&
+                        calendar.getTimeInMillis() <= endDate.getTime()) {
                     assignments.add(assign);
                 }
             }

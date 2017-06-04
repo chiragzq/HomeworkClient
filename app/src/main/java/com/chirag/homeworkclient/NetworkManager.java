@@ -64,7 +64,7 @@ public class NetworkManager {
         }
     }
 
-    public void getAssignmentPage() {
+    public String getAssignmentPage() {
         try {
             HttpsURLConnection client = createConnection(assignmentUrl, "GET");
             setHeaders(client, mSessionId, 0, otherUrl, "");
@@ -83,9 +83,10 @@ public class NetworkManager {
             }
 
             in.close();
-            //System.out.println(response.toString());
+            return response.toString();
         } catch(Exception e) {
             e.printStackTrace();
         }
+        return "";
     }
 }
