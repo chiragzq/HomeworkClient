@@ -19,9 +19,6 @@ import org.jsoup.select.Elements;
  */
 
 public class AssignmentParser {
-    static Document mDocument;
-    static ArrayList<JSONObject> mAssignments;
-
     static String getHtml(Context context) {
         InputStream stream = context.getResources().openRawResource(R.raw.out);
         BufferedReader r = new BufferedReader(new InputStreamReader(stream));
@@ -95,15 +92,10 @@ public class AssignmentParser {
     }
 
     public static ArrayList<JSONObject> getAssignments(String html) {
-        if(mAssignments == null)  {
-            mDocument = Jsoup.parse(html);
-            ArrayList<String> classes = getClasses(mDocument);
-            mAssignments = parseAssignments(mDocument, classes);
-        }
-
-        return mAssignments;
+        Document document = Jsoup.parse(html);
+        ArrayList<String> classes = getClasses(document);
+        return parseAssignments(document, classes);
     }
-
 
     private static ArrayList<String> getClasses(Document doc) {
         ArrayList<String> classList = new ArrayList<String>();

@@ -22,7 +22,7 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mNetworkManager = new NetworkManager();
-        mDataManager = new DataManager(mNetworkManager);
+        mDataManager = new DataManager(mNetworkManager, this);
         mMainClickListener = new MainClickListener();
         mLoginFragment = LoginFragment.newInstance(mMainClickListener, mDataManager);
 

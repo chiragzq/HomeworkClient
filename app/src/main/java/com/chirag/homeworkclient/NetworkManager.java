@@ -67,7 +67,7 @@ public class NetworkManager {
     public String getAssignmentPage() {
         try {
             HttpsURLConnection client = createConnection(assignmentUrl, "GET");
-            setHeaders(client, mSessionId, 0, otherUrl, "");
+            setHeaders(client, mSessionId, 0, otherUrl, mToken);
             client.connect();
 
             int responseCode = client.getResponseCode();
