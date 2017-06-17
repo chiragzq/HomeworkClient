@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -20,9 +21,14 @@ public class DayFragment extends Fragment {
     private int mYear;
     private int mMonth;
     private int mDay;
+    private AssignmentAdapter mAdapter;
 
     public DayFragment() {
-        // Required
+
+    }
+
+    public void updateList() {
+        mAdapter.notifyDataSetChanged();
     }
 
     // TODO: Rename and change type
@@ -46,7 +52,8 @@ public class DayFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_day, container, false);
         ListView listView = (ListView) view.findViewById(R.id.list_view);
-        listView.setAdapter(new AssignmentAdapter(mDataManager.getAssignments(mYear, mMonth+1, mDay)));
+        mAdapter = new AssignmentAdapter(mDataManager.getAssignments(mYear, mMonth+1, mDay));
+        listView.setAdapter(mAdapter);
 
         String day = (mDay < 10 ? "0" : "") + mDay;
         String month = ((mMonth + 1) < 10 ? "0" : "") + (mMonth + 1);
@@ -97,6 +104,13 @@ public class DayFragment extends Fragment {
                 convertView = inflater.inflate(R.layout.fragment_assignment, parent, false);
             }
 
+            convertView.setBackgroundResource(
+                    mDataManager.isAssignmentDone(mAssignments.get(position)) ?
+                            R.color.doneAssignmentBackground :
+                            R.color.newAssignmentBackground
+            );
+
+
             ((TextView) convertView.findViewById(R.id.class_name_text)).setText(
                     mAssignments.get(position).course);
 
@@ -110,6 +124,16 @@ public class DayFragment extends Fragment {
 
             ((TextView) convertView.findViewById(R.id.assignment_description_text)).setText(
                     Html.fromHtml(mAssignments.get(position).desc));
+
+            Button doneButton = (Button)convertView.findViewById(R.id.done_button);
+            doneButton.setText(
+                    mDataManager.isAssignmentDone(mAssignments.get(position)) ?
+                            R.string.button_incomplete :
+                            R.string.button_done
+            );
+
+            doneButton.setOnClickListener(mClickListener);
+            doneButton.setTag(mAssignments.get(position));
 
             return convertView;
         }

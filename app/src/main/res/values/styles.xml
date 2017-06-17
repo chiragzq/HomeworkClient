@@ -18,4 +18,6 @@
         <item name="android:singleLine">true</item>
         <item name="android:visibility">gone</item>
     </style>
+
+
 </resources>

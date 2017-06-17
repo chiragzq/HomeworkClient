@@ -6,4 +6,6 @@
     <string name="loading_text">Loading...</string>
     <string name="login_failed">Failed to log in.</string>
     <string name="logout_button">Logout</string>
+    <string name="button_done">Done</string>
+    <string name="button_incomplete">Incomplete</string>
 </resources>

@@ -11,13 +11,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.sql.Date;
 import java.util.Map;
+import java.util.jar.Pack200;
 
 
 /**
@@ -41,17 +41,19 @@ public class DataManager {
         mAssignments = new JSONArray(
                 AssignmentParser.getAssignments(hi)
         );
+        updateDones();
+        loadDone();
     }
 
     public List<Assignment> getAssignments(int year, int month, int day) {
-        List<Assignment> assignments = new ArrayList<>();
+        List<Assignment> doneAssignments = new ArrayList<>();
+        List<Assignment> notDoneAssignments = new ArrayList<>();
 
         try {
 
             Calendar calendar = Calendar.getInstance();
-            calendar.set(year,month-1,day);
-            Date todayDate = new Date(calendar.getTimeInMillis());
-            for(int i=0; i < mAssignments.length(); i++) {
+            calendar.set(year, month - 1, day);
+            for (int i = 0; i < mAssignments.length(); i++) {
                 JSONObject assignJson = mAssignments.getJSONObject(i);
                 Date startDate = getDate(assignJson.getString("start"));
                 Date endDate = getDate(assignJson.getString("end"));
@@ -61,62 +63,88 @@ public class DataManager {
                         assignJson.getString("course"),
                         startDate,
                         endDate
-                        );
-                if(calendar.getTimeInMillis() >= startDate.getTime() &&
+                );
+                if (calendar.getTimeInMillis() >= startDate.getTime() &&
                         calendar.getTimeInMillis() <= endDate.getTime()) {
-                    assignments.add(assign);
+                    if(isAssignmentDone(assign)) {
+                        doneAssignments.add(assign);
+                    } else {
+                        notDoneAssignments.add(assign);
+                    }
                 }
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        return assignments;
+        notDoneAssignments.addAll(doneAssignments);
+        return notDoneAssignments;
     }
 
-    public void setAssignmentDone(String id, boolean done, Context context) throws Exception{ //onclick listener in mainactivity
-        //on app load load done assingment files store in a map
+    public boolean isAssignmentDone(Assignment assignment) {
+        Boolean ret = mDoneMap.get(assignment.toString());
+        return ret == null ? false : ret;
+    }
 
-        File file = new File(context.getFilesDir(), "done");
+    public void toggleDone(Assignment assignment) throws Exception { //onclick listener in mainactivity
+        loadDone();
+        mDoneMap.put(assignment.toString(), !isAssignmentDone(assignment));
+        saveDones();
+    }
 
-        BufferedReader br = new BufferedReader(new FileReader(file));
-        String line;
-        String[] split;
-        while ((line = br.readLine()) != null) {
-            split = line.split(",");
-            mDoneMap.put(split[0], split[1].equals("true"));
+    public void updateDones() {
+        try {
+            ArrayList<String> ids = new ArrayList<>();
+            for(int i = 0;i < mAssignments.length(); i++) {
+                JSONObject assignJson = mAssignments.getJSONObject(i);
+                ids.add(Assignment.generateKey(
+                        assignJson.getString("title"),
+                        assignJson.getString("start"),
+                        assignJson.getString("end")
+                        )
+                );
+            }
+            loadDone();
+            for(String id : mDoneMap.keySet()) {
+                if(!ids.contains(id)) {
+                    mDoneMap.remove(id);
+                }
+            }
+            saveDones();
+        } catch(Exception e) {
+            e.printStackTrace();
         }
 
-        mDoneMap.put(id, done);
-        saveDones(mContext);
     }
 
-    public void saveDones(Context context) throws Exception {
+    public void saveDones() throws Exception {
         //save map 2 file
-        File file = new File(context.getFilesDir(), "done");
+        File file = new File(mContext.getFilesDir(), "done");
         file.createNewFile();
         FileOutputStream fos = new FileOutputStream(file);
         StringBuilder builder = new StringBuilder();
-        for(String id : mDoneMap.keySet()) {
+        for (String id : mDoneMap.keySet()) {
             builder.append(id + "," + mDoneMap.get(id) + "\n");
         }
         fos.write(builder.toString().getBytes());
         fos.close();
     }
 
-    public void loadDone(Context context) { //after file download
+    public void loadDone() { //after file download
         try {
-            File file = new File(context.getFilesDir(), "done");
+            File file = new File(mContext.getFilesDir(), "done");
 
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
             String[] split;
             while ((line = br.readLine()) != null) {
                 split = line.split(",");
+                Log.d("DEBUG", line);
                 mDoneMap.put(split[0], split[1].equals("true"));
+
             }
-        } catch(Exception e) {
-                e.printStackTrace();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -125,32 +153,3 @@ public class DataManager {
         return Date.valueOf(s);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

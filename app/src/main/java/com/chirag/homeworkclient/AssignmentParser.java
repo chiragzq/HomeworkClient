@@ -1,6 +1,7 @@
 package com.chirag.homeworkclient;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -76,12 +77,11 @@ public class AssignmentParser {
             }
             assignment.put("start", begin);
             assignment.put("end", finish);
-            //assignment.put("desc", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eget ex et lectus dignissim consectetur. Suspendisse pulvinar elementum diam in facilisis. Suspendisse cursus, magna vel tristique ultrices, ipsum magna faucibus nunc, eget dictum nisi lorem rutrum magna. ");
             assignment.put("desc", des);
             assignment.put("course", course);
             assignment.put("title", title);
 
-            String key = title.replaceAll("[^\\w]", "") + begin + finish;
+            String key = Assignment.generateKey(title, begin, finish);
 
             if(!parsed.contains(key)) {
                 parsed.add(key);
