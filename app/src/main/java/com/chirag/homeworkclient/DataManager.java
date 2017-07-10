@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.sql.Date;
 import java.util.Map;
-import java.util.jar.Pack200;
 
 
 /**
@@ -41,7 +40,7 @@ public class DataManager {
         mAssignments = new JSONArray(
                 AssignmentParser.getAssignments(hi)
         );
-        updateDones();
+        cleanUpDones();
         loadDone();
     }
 
@@ -91,7 +90,7 @@ public class DataManager {
         saveDones();
     }
 
-    public void updateDones() {
+    public void cleanUpDones() {
         try {
             ArrayList<String> ids = new ArrayList<>();
             for(int i = 0;i < mAssignments.length(); i++) {
@@ -104,11 +103,13 @@ public class DataManager {
                 );
             }
             loadDone();
+            ArrayList<String> toDelete = new ArrayList<>();
             for(String id : mDoneMap.keySet()) {
                 if(!ids.contains(id)) {
-                    mDoneMap.remove(id);
+                    toDelete.add(id);
                 }
             }
+            mDoneMap.keySet().removeAll(toDelete);
             saveDones();
         } catch(Exception e) {
             e.printStackTrace();
