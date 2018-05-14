@@ -6,6 +6,18 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
     </style>
+    <!-- top calendar row text -->
+    <style name="TopRowText" parent="@android:style/TextAppearance.DeviceDefault">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="CalendarAssignment" parent="@android:style/TextAppearance.DeviceDefault">
+        <item name="android:textStyle">bold</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
 
 </resources>

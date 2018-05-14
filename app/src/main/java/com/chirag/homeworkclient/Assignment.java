@@ -1,5 +1,7 @@
 package com.chirag.homeworkclient;
 
+import android.util.Log;
+
 import java.sql.Date;
 
 /**
@@ -20,5 +22,18 @@ public class Assignment {
         this.course = course;
         this.start = start;
         this.end = end;
+    }
+
+    @Override
+    public String toString() {
+        return generateKey(title, start, end);
+    }
+
+    public static String generateKey(String title, String start, String end) {
+        return title.replaceAll("[^\\w]", "") + start.toString() + end.toString();
+    }
+
+    public static String generateKey(String title, Date start, Date end) {
+        return title.replaceAll("[^\\w]", "") + start.toString() + end.toString();
     }
 }
