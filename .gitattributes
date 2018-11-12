@@ -1,1 +1,1 @@
-*.xml linguist-vendored=false
+app/src/main/res/* linguist-vendored=false
