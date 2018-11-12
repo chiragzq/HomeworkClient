@@ -28,6 +28,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.0.1'
     compile 'com.android.support:support-v4:25.0.1'
     testCompile 'junit:junit:4.12'
-    compile files('/home/spafindoople/Downloads/HomeworkClient/libs/json-simple-1.1.1.jar')
-    compile files('/home/spafindoople/Downloads/HomeworkClient/libs/jsoup-1.10.2.jar')
+    compile files('libs/json-simple-1.1.1.jar')
+    compile files('libs/jsoup-1.10.2.jar')
 }
