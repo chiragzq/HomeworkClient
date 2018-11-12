@@ -1,1 +1,2 @@
-*.xml linguist-vendored
+* linguist-vendored
+*.xml linguist-vendored=false
